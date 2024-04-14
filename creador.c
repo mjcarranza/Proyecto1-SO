@@ -3,7 +3,9 @@
 #include <sys/shm.h>
 #include <sys/ipc.h>
 #include <sys/types.h>
+#include <fcntl.h> // para la creacion del semaforo
 #include <unistd.h>  // Incluir para la función sleep
+#include <semaphore.h> // Para utilizar semaforos
 
 
 // Definir tamaño de entero
@@ -11,7 +13,17 @@
 // Definir tamaño de caracter
 #define TAM_CHAR 1
 
+sem_t *semaforo; // instancia de semaforo
+
 int main() {
+
+  // Abrir el semáforo con nombre
+    semaforo = sem_open("/mysemaphore", O_CREAT, 0644, 1); // "/mysemaphore" es el nombre del semaforo. Utilizarlo para acceder a el en los demas procesos
+    if (semaforo == SEM_FAILED) { // en caso de que falle la creacion del semaforo
+        perror("sem_open");
+        exit(EXIT_FAILURE);
+    }
+    
   // Pedir al usuario la cantidad de caracteres
   int num_caracteres;
   printf("Ingrese la cantidad de caracteres a compartir: ");
@@ -66,4 +78,8 @@ int main() {
 }
 
 
-// esta es la direccion de memoria donde se inicia la memoria compartida --> 0x7ffff7ffa000
+// esta es la direccion de memoria donde se inicia la memoria compartida 
+// --> 0x7ffff7ffa000
+
+// hacer algo para poder cerrar la ejecucion del proceso y con ello cerrar 
+// el semaforo
