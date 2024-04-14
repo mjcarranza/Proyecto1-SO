@@ -23,7 +23,7 @@ int main() {
         perror("sem_open");
         exit(EXIT_FAILURE);
     }
-    
+
   // Pedir al usuario la cantidad de caracteres
   int num_caracteres;
   printf("Ingrese la cantidad de caracteres a compartir: ");
@@ -56,8 +56,11 @@ int main() {
     ptr_entero[i] = 0;
   }
 
+  /* 
+      Cambiar esto, no puedo utilizar bussy waiting ------------------------------
+  */
   // Visualizar la memoria compartida en tiempo real
-  while (1) {
+  while (1) {  
     // Mostrar el contenido de la memoria
     for (int i = 0; i < num_caracteres; i++) {
       printf("%d ", ptr_entero[i]);
