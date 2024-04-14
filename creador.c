@@ -3,6 +3,8 @@
 #include <sys/shm.h>
 #include <sys/ipc.h>
 #include <sys/types.h>
+#include <unistd.h>  // Incluir para la función sleep
+
 
 // Definir tamaño de entero
 #define TAM_ENTERO 4
@@ -30,6 +32,7 @@ int main() {
 
   // Mapear la memoria compartida en el espacio de direcciones del proceso
   void *ptr_memoria = shmat(id_memoria, NULL, 0);
+  printf("La dirección de memoria es: %p\n", ptr_memoria);
   if (ptr_memoria == (void *)-1) {
     perror("Error al mapear la memoria compartida");
     exit(1);
@@ -61,3 +64,6 @@ int main() {
 
   return 0;
 }
+
+
+// esta es la direccion de memoria donde se inicia la memoria compartida --> 0x7ffff7ffa000

@@ -12,4 +12,4 @@ run: $(TARGET)									# Regla para ejecutar el programa
 	./$(TARGET)
 
 clean:											# Regla para limpiar los archivos generados
-	rm -f $(TARGET)
+	rm -f $(TARGET) creador
