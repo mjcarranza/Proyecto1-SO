@@ -23,12 +23,12 @@ int main() {
   }
 
   /*---------------------------Pedir al usuario la cantidad de caracteres----------------------------*/
-  int num_caracteres = 100;
+  int num_caracteres = 0;
   printf("Ingrese la cantidad de caracteres a compartir: ");
   scanf("%d", &num_caracteres);
 
   // Calcular el tamaño total de la memoria (4 bytes por caracter)
-  int tamanio_memoria = num_caracteres * TAM_ENTERO;
+  int tamanio_memoria = (num_caracteres * TAM_ENTERO) + 2;
 
   /*-------------------------------------Crear la memoria compartida-------------------------------------*/
   // Clave para identificar la memoria compartida
@@ -55,16 +55,23 @@ int main() {
   }
 
   /*---------------------------Visualizar la memoria compartida en tiempo real---------------------------*/
-  while (1) {  
+  while (1) {      
     // Mostrar el contenido de la memoria
-    for (int i = 0; i < num_caracteres; i++) {
+    for (int i = 2; i < tamanio_memoria+1; i++) {
       char caracter = (char) ptr_entero[i];
       printf("%c", caracter);
     }
     printf("\n");
 
+    // si se termino la escritura, terminar el programa
+    if (ptr_entero[1] == 1)
+    {
+      printf("\nTransferencia terminada.\n");
+      break;
+    }
+
     // Simular tiempo real (esperar 1 segundo)
-    sleep(2);
+    sleep(1);
   }
 
   /*-----------------------------TERMINAR EL PROGRAMA-----------------------------*/

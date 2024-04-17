@@ -10,18 +10,19 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>     // Incluir para la función sleep
 #include <semaphore.h>  // Para utilizar semaforos
 #include <fcntl.h>      // para la creacion del semaforo
 
-#define MEM_SIZE 20     // Tamaño de la memoria compartida en bytes
+#define MEM_SIZE 22     // Tamaño de la memoria compartida en bytes
 #define MAX_SIZE 1000   // Tamaño máximo del archivo
 
 char buffer[MAX_SIZE];
 char caracter;          // variable para guardar el caracter leido
 sem_t semaforo;         // instancia de semaforo
 size_t bytesLeidos;     // longitud del buffer
-int contador = 1;       // contador para conrolar los espacios de memoria donde se escribe
+int contador = 2;       // contador para conrolar los espacios de memoria donde se escribe
 int *ptr_entero;        // puntero para la memoria compartida
 char caracterFile;
 
@@ -92,38 +93,44 @@ int main() {
 
     while (1)
     {
-        sem_wait(&semaforo);                // pedir semaforo
-        if (ptr_entero[0] < bytesLeidos){       // verificar si ya se termino de leer el archivo
+        sem_wait(&semaforo);                                                    // pedir semaforo
+        if (ptr_entero[0] < bytesLeidos){                                       // verificar si ya se termino de leer el archivo
 
-            // cuando termina de escribir los campos de la memoria, se tiene que devolver al inicio de la memoria compartida
-            // tengo que quitar el for
-            if (contador < MEM_SIZE)                // si se cumple, se escribe (memoria compartida para caracteres empieza en posicion 1 ==> contador = 1)
+            if (contador < MEM_SIZE)                                            // si se cumple, se escribe (memoria compartida para caracteres empieza en posicion 1 ==> contador = 1)
             {
-                caracter = buffer[ptr_entero[0]];   // Acceder al carácter en el índice especificado
-                ptr_entero[contador] = caracter;           // escribir en al direccion de memoria compartida
+                caracter = buffer[ptr_entero[0]];                               // Acceder al carácter en el índice especificado
+                ptr_entero[contador] = caracter;                                // escribir en al direccion de memoria compartida
 
-                printf("El caracter introducido es: %c\n",caracter);          // imprimir lo necesario
+                printf("El caracter introducido es: %c\n",caracter);            // imprimir lo necesario
+                
+                time_t now = time(NULL);                                        // Obtener el tiempo actual
+                struct tm *local = localtime(&now);                             // Convertir time_t a estructura tm como hora local
+                printf("Hora de insersión en memoria: %02d:%02d:%02d\n", local->tm_hour,  local->tm_min, local->tm_sec);  //horas:minutos:segundos
+                
                 int memPos = (int *)memoria+contador;
-                printf("Posición en memoria donde se introdujo el caracter: 0x%X\n", memPos);
+                printf("Posición en memoria donde se introdujo el caracter: 0x%X\n\n", memPos);
 
                 ptr_entero[0] = ptr_entero[0] + 1;  // aumentar la posicion en la que se debe leer del buffer
                 contador ++;                        // aumentar el contador
+                printf("El contador es: %d\n", ptr_entero[0]);
+                printf("El contador de for es: %d\n", contador);
             }
             else{                                   // volver al inicio de la memoria compartida para los caracteres
-                sleep(2);
-                contador = 1;
+                sleep(1);
+                contador = 2;
             }
 
             
         }
         else{
+            ptr_entero[1] = 1;
             printf("Se acabo el documento \n");
-            return 0;
+            break;
         }
         sem_post(&semaforo);                // liberar el semaforo
     }
 
-
+    sem_post(&semaforo);                // liberar el semaforo
     /*----------------------Desadjuntar la memoria compartida--------------------------*/
     if (shmdt(memoria) == -1) {
         perror("Error al desadjuntar la memoria compartida");
