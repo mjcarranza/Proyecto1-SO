@@ -48,23 +48,23 @@ int main() {
     exit(1);
   }
 
-  // Inicializar la memoria compartida
+  // Inicializar la memoria compartida (todos los campos en 0)
   int *ptr_entero = (int *)ptr_memoria;
   for (int i = 0; i < num_caracteres; i++) {
     ptr_entero[i] = 0;
   }
 
-  /*------------------------------Cambiar esto, no puedo utilizar bussy waiting------------------------------*/
   /*---------------------------Visualizar la memoria compartida en tiempo real---------------------------*/
   while (1) {  
     // Mostrar el contenido de la memoria
     for (int i = 0; i < num_caracteres; i++) {
-      printf("%d ", ptr_entero[i]);
+      char caracter = (char) ptr_entero[i];
+      printf("%c", caracter);
     }
     printf("\n");
 
     // Simular tiempo real (esperar 1 segundo)
-    sleep(4);
+    sleep(2);
   }
 
   /*-----------------------------TERMINAR EL PROGRAMA-----------------------------*/
