@@ -28,7 +28,7 @@ int main() {
   scanf("%d", &num_caracteres);
 
   // Calcular el tamaño total de la memoria (4 bytes por caracter)
-  int tamanio_memoria = (num_caracteres * TAM_ENTERO) + 2;
+  int tamanio_memoria = (num_caracteres * TAM_ENTERO) + 11;
 
   /*-------------------------------------Crear la memoria compartida-------------------------------------*/
   // Clave para identificar la memoria compartida

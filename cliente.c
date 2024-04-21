@@ -22,7 +22,7 @@ char buffer[MAX_SIZE];
 char caracter;          // variable para guardar el caracter leido
 sem_t semaforo;         // instancia de semaforo
 size_t bytesLeidos;     // longitud del buffer
-int contador = 2;       // contador para conrolar los espacios de memoria donde se escribe
+int contador = 12;      // contador para conrolar los espacios de memoria donde se escribe
 int *ptr_entero;        // puntero para la memoria compartida
 char caracterFile;
 

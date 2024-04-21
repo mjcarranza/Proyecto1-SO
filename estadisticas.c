@@ -47,25 +47,27 @@ int main() {
     }
 
     ptr_entero = (int *)memoria;    // ver si debo poner el asterisco antes de ptr
+    printf("Esperando que los procesos terminen.... \n\n");
 
     while (1)
     {
         /* revisar que hayan terminado todos los procesos, si terminaron*/
-        if ((ptr_entero[1] == 1) && (ptr_entero[11] == 1)) // si ya terminaron el cliente y el reconstructor
+        if ((ptr_entero[1] == 1) ) // si ya terminaron el cliente y el reconstructor
         {
             sem_wait(&semaforo); // pedir semaforo
             // mostrar las estadisticas segun los valores encontrados en memoria
-            printf("Estadísticas de los procesos. \n");
-            printf("Tiempo bloqueado del Cliente: %d", ptr_entero[2]);
-            printf("Tiempo bloquedado del Reconstructor: %d", ptr_entero[3]);
-            printf("Número de caracteres transferidos: %d", ptr_entero[0]);
-            printf("Número de caracteres en el buffer: %d", ptr_entero[4]);
-            printf("Espacio total de memoria utilizado: %d", ptr_entero[5]);
-            printf("Tiempo del Cliente en modo Usuario: %d", ptr_entero[6]);
-            printf("Tiempo del Cliente en modo Kernel: %d", ptr_entero[7]);
-            printf("Tiempo del Reconstructor en modo Usuario: %d", ptr_entero[8]);
-            printf("Tiempo del Reconstructor en modo Kernel: %d", ptr_entero[9]);
+            printf("--------> Estadísticas de los procesos --------> \n\n");
+            printf("Tiempo bloqueado del Cliente: %d\n", ptr_entero[2]);
+            printf("Tiempo bloquedado del Reconstructor: %d\n", ptr_entero[3]);
+            printf("Número de caracteres transferidos: %d\n", ptr_entero[0]);
+            printf("Número de caracteres en el buffer: %d\n", ptr_entero[4]);
+            printf("Espacio total de memoria utilizado: %d\n", ptr_entero[5]);
+            printf("Tiempo del Cliente en modo Usuario: %d\n", ptr_entero[6]);
+            printf("Tiempo del Cliente en modo Kernel: %d\n", ptr_entero[7]);
+            printf("Tiempo del Reconstructor en modo Usuario: %d\n", ptr_entero[8]);
+            printf("Tiempo del Reconstructor en modo Kernel: %d\n", ptr_entero[9]);
             sem_post(&semaforo); // liberar semaforo
+            break;
         }
         
     }
