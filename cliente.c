@@ -5,6 +5,7 @@
 */
 
 #include <stdio.h>
+#include <time.h>
 #include <string.h>
 #include <stdlib.h>
 #include <sys/ipc.h>
@@ -15,20 +16,23 @@
 #include <semaphore.h>  // Para utilizar semaforos
 #include <fcntl.h>      // para la creacion del semaforo
 
-#define MEM_SIZE 22     // Tamaño de la memoria compartida en bytes
+#define MEM_SIZE 34     // Tamaño de la memoria compartida en bytes
 #define MAX_SIZE 1000   // Tamaño máximo del archivo
 
 char buffer[MAX_SIZE];
 char caracter;          // variable para guardar el caracter leido
 sem_t semaforo;         // instancia de semaforo
 size_t bytesLeidos;     // longitud del buffer
-int contador = 12;      // contador para conrolar los espacios de memoria donde se escribe
+int contador = 15;      // contador para conrolar los espacios de memoria donde se escribe
 int *ptr_entero;        // puntero para la memoria compartida
 char caracterFile;
 
 int main() {
 
     FILE *archivo;
+    clock_t tu, tu_end, tk, tk_end, tBlock, tBlock_end;
+    double t_usuario;
+    double t_kernel = 0;
     
     /*----------------Pedir al usuario el nombre del archivo----------------*/
     char direccion[50] = "archivos/";
@@ -93,15 +97,30 @@ int main() {
 
     while (1)
     {
+        tBlock = clock();
         sem_wait(&semaforo);                                                    // pedir semaforo
+        tBlock_end = clock();
+        ptr_entero[2] = ptr_entero[2] + ((double) (tBlock_end-tBlock)) / CLOCKS_PER_SEC;
+
         if (ptr_entero[0] < bytesLeidos){                                       // verificar si ya se termino de leer el archivo
 
-            if (contador < MEM_SIZE)                                            // si se cumple, se escribe (memoria compartida para caracteres empieza en posicion 1 ==> contador = 1)
+            if (contador <= MEM_SIZE)                                            // si se cumple, se escribe (memoria compartida para caracteres empieza en posicion 1 ==> contador = 1)
             {
+                tk = clock();
                 caracter = buffer[ptr_entero[0]];                               // Acceder al carácter en el índice especificado
                 ptr_entero[contador] = caracter;                                // escribir en al direccion de memoria compartida
+                tk_end = clock();
+                ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
+
+                // obtener tamano del caracter
+                tk = clock();
+                ptr_entero[5] = ptr_entero[5] + sizeof(caracter);
+                tk_end = clock();
+                ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
 
                 printf("El caracter introducido es: %c\n",caracter);            // imprimir lo necesario
+
+                
                 
                 time_t now = time(NULL);                                        // Obtener el tiempo actual
                 struct tm *local = localtime(&now);                             // Convertir time_t a estructura tm como hora local
@@ -110,14 +129,19 @@ int main() {
                 int memPos = (int *)memoria+contador;
                 printf("Posición en memoria donde se introdujo el caracter: 0x%X\n\n", memPos);
 
+                tk = clock();
                 ptr_entero[0] = ptr_entero[0] + 1;  // aumentar la posicion en la que se debe leer del buffer
+                tk_end = clock();
+                ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
+
                 contador ++;                        // aumentar el contador
                 printf("El contador es: %d\n", ptr_entero[0]);
                 printf("El contador de for es: %d\n", contador);
+                
             }
             else{                                   // volver al inicio de la memoria compartida para los caracteres
                 sleep(1);
-                contador = 2;
+                contador = 15;
             }
 
             

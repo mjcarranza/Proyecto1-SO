@@ -57,15 +57,15 @@ int main() {
             sem_wait(&semaforo); // pedir semaforo
             // mostrar las estadisticas segun los valores encontrados en memoria
             printf("--------> Estadísticas de los procesos --------> \n\n");
-            printf("Tiempo bloqueado del Cliente: %d\n", ptr_entero[2]);
-            printf("Tiempo bloquedado del Reconstructor: %d\n", ptr_entero[3]);
-            printf("Número de caracteres transferidos: %d\n", ptr_entero[0]);
-            printf("Número de caracteres en el buffer: %d\n", ptr_entero[4]);
-            printf("Espacio total de memoria utilizado: %d\n", ptr_entero[5]);
-            printf("Tiempo del Cliente en modo Usuario: %d\n", ptr_entero[6]);
-            printf("Tiempo del Cliente en modo Kernel: %d\n", ptr_entero[7]);
-            printf("Tiempo del Reconstructor en modo Usuario: %d\n", ptr_entero[8]);
-            printf("Tiempo del Reconstructor en modo Kernel: %d\n", ptr_entero[9]);
+            printf("Tiempo bloqueado del Cliente: %f segundos.\n", ptr_entero[2]);                //
+            printf("Tiempo bloquedado del Reconstructor: %f segundos.\n", ptr_entero[3]);         // server
+            printf("Número de caracteres transferidos: %d caracteres.\n", ptr_entero[0]);           //
+            printf("Número de caracteres en el buffer: %d caracteres.\n", ptr_entero[4]);           // server
+            printf("Espacio total de memoria utilizado: %d bytes.\n", ptr_entero[5]);          //
+            printf("Tiempo del Cliente en modo Usuario: %f segundos.\n", ptr_entero[6]);
+            printf("Tiempo del Cliente en modo Kernel: %f segundos.\n", ptr_entero[7]);           //
+            printf("Tiempo del Reconstructor en modo Usuario: %f segundos.\n", ptr_entero[8]);
+            printf("Tiempo del Reconstructor en modo Kernel: %f segundos.\n", ptr_entero[9]);
             sem_post(&semaforo); // liberar semaforo
             break;
         }

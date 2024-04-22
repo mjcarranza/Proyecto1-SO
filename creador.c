@@ -42,7 +42,6 @@ int main() {
 
   // Mapear la memoria compartida en el espacio de direcciones del proceso
   void *ptr_memoria = shmat(id_memoria, NULL, 0);
-  printf("La dirección de memoria es: %p\n", ptr_memoria);
   if (ptr_memoria == (void *)-1) {
     perror("Error al mapear la memoria compartida");
     exit(1);
@@ -50,14 +49,14 @@ int main() {
 
   // Inicializar la memoria compartida (todos los campos en 0)
   int *ptr_entero = (int *)ptr_memoria;
-  for (int i = 0; i < num_caracteres; i++) {
+  for (int i = 0; i < tamanio_memoria+1; i++) {
     ptr_entero[i] = 0;
   }
-
+  printf("Imprimiendo memoria....\n");
   /*---------------------------Visualizar la memoria compartida en tiempo real---------------------------*/
   while (1) {      
     // Mostrar el contenido de la memoria
-    for (int i = 2; i < tamanio_memoria+1; i++) {
+    for (int i = 15; i < tamanio_memoria+1; i++) {
       char caracter = (char) ptr_entero[i];
       printf("%c", caracter);
     }
