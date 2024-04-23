@@ -28,7 +28,7 @@ int main() {
   scanf("%d", &num_caracteres);
 
   // Calcular el tamaño total de la memoria (4 bytes por caracter)
-  int tamanio_memoria = (num_caracteres * TAM_ENTERO) + 11;
+  int tamanio_memoria = (num_caracteres+15) * TAM_ENTERO;
 
   /*-------------------------------------Crear la memoria compartida-------------------------------------*/
   // Clave para identificar la memoria compartida
@@ -56,7 +56,7 @@ int main() {
   /*---------------------------Visualizar la memoria compartida en tiempo real---------------------------*/
   while (1) {      
     // Mostrar el contenido de la memoria
-    for (int i = 15; i < tamanio_memoria+1; i++) {
+    for (int i = 16; i < tamanio_memoria+1; i++) {
       char caracter = (char) ptr_entero[i];
       printf("%c", caracter);
     }
@@ -70,7 +70,7 @@ int main() {
     }
 
     // Simular tiempo real (esperar 1 segundo)
-    sleep(1);
+    sleep(0.5);
   }
 
   /*-----------------------------TERMINAR EL PROGRAMA-----------------------------*/

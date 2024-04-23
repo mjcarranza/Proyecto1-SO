@@ -16,31 +16,33 @@
 #include <semaphore.h>  // Para utilizar semaforos
 #include <fcntl.h>      // para la creacion del semaforo
 
-#define MEM_SIZE 34     // Tamaño de la memoria compartida en bytes
+#define MEM_SIZE 35     // Tamaño de la memoria compartida en bytes
 #define MAX_SIZE 1000   // Tamaño máximo del archivo
 
 char buffer[MAX_SIZE];
 char caracter;          // variable para guardar el caracter leido
 sem_t semaforo;         // instancia de semaforo
 size_t bytesLeidos;     // longitud del buffer
-int contador = 15;      // contador para conrolar los espacios de memoria donde se escribe
+int contador;           // contador para conrolar los espacios de memoria donde se escribe
 int *ptr_entero;        // puntero para la memoria compartida
 char caracterFile;
 
 int main() {
 
     FILE *archivo;
-    clock_t tu, tu_end, tk, tk_end, tBlock, tBlock_end;
-    double t_usuario;
-    double t_kernel = 0;
+    clock_t tu, tu_end, tk, tk_end, tBlock, tBlock_end; 
     
     /*----------------Pedir al usuario el nombre del archivo----------------*/
     char direccion[50] = "archivos/";
     char nombre[50]; // Variable para almacenar el nombre del archivo
+    char modo[50];
     printf("Ingrese el nombre del archivo a abrir (no especifique la extension del archivo): ");
     scanf("%s", nombre); // Lee el nombre ingresado por el usuario y lo guarda en la variable 'nombre'
     strcat(nombre, ".txt");
     strcat(direccion, nombre); // la variable direccion tiene la direccion del archivo que se va a abrir
+
+    printf("Ingrese el modo en que quiere ejecutar el proceso (automatico o manual): ");
+    scanf("%s", modo);
 
     /*---------------------Abre el archivo en modo lectura--------------------*/
     archivo = fopen(direccion, "r");
@@ -93,7 +95,9 @@ int main() {
         printf("%c", buffer[i]);
     }
     printf("\n\n");
-    
+
+    ptr_entero[15] = 16; // inicializar el contador de posicion en memoria en cero
+    printf("contadooor: %d\n",ptr_entero[15]);
 
     while (1)
     {
@@ -103,7 +107,7 @@ int main() {
         ptr_entero[2] = ptr_entero[2] + ((double) (tBlock_end-tBlock)) / CLOCKS_PER_SEC;
 
         if (ptr_entero[0] < bytesLeidos){                                       // verificar si ya se termino de leer el archivo
-
+            contador = ptr_entero[15];
             if (contador <= MEM_SIZE)                                            // si se cumple, se escribe (memoria compartida para caracteres empieza en posicion 1 ==> contador = 1)
             {
                 tk = clock();
@@ -134,14 +138,15 @@ int main() {
                 tk_end = clock();
                 ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
 
-                contador ++;                        // aumentar el contador
+                ptr_entero[15] = ptr_entero[15] + 1;                        // aumentar el contador
                 printf("El contador es: %d\n", ptr_entero[0]);
-                printf("El contador de for es: %d\n", contador);
+                printf("El contador de for es: %d\n", ptr_entero[15]);
+                sleep(2);
                 
             }
             else{                                   // volver al inicio de la memoria compartida para los caracteres
-                sleep(1);
-                contador = 15;
+                //sleep(1);
+                ptr_entero[15] = 16;
             }
 
             
@@ -149,12 +154,13 @@ int main() {
         else{
             ptr_entero[1] = 1;
             printf("Se acabo el documento \n");
+            sem_post(&semaforo);                // liberar el semaforo
             break;
         }
         sem_post(&semaforo);                // liberar el semaforo
     }
 
-    sem_post(&semaforo);                // liberar el semaforo
+    
     /*----------------------Desadjuntar la memoria compartida--------------------------*/
     if (shmdt(memoria) == -1) {
         perror("Error al desadjuntar la memoria compartida");
