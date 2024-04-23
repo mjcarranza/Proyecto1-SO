@@ -63,7 +63,6 @@ int main() {
         sem_wait(&semaforo);  
                                                           // pedir semaforo
         int caracteres_memoria = (int) ptr_entero[13];               // Acceder al carácter en el índice especificado
-        char caracter;
 
         if (caracteres_memoria > 0){
             int cont_reconstructor = (int) ptr_entero[14];
