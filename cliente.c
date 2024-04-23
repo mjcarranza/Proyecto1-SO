@@ -35,14 +35,11 @@ int main() {
     /*----------------Pedir al usuario el nombre del archivo----------------*/
     char direccion[50] = "archivos/";
     char nombre[50]; // Variable para almacenar el nombre del archivo
-    char modo[50];
+    char modo[1];
     printf("Ingrese el nombre del archivo a abrir (no especifique la extension del archivo): ");
     scanf("%s", nombre); // Lee el nombre ingresado por el usuario y lo guarda en la variable 'nombre'
     strcat(nombre, ".txt");
     strcat(direccion, nombre); // la variable direccion tiene la direccion del archivo que se va a abrir
-
-    printf("Ingrese el modo en que quiere ejecutar el proceso (automatico o manual): ");
-    scanf("%s", modo);
 
     /*---------------------Abre el archivo en modo lectura--------------------*/
     archivo = fopen(direccion, "r");
@@ -52,6 +49,9 @@ int main() {
         printf("No se pudo abrir el archivo.\n");
         return 1;
     }
+
+    printf("Especifique el modo de ejecución --> \n1. Automático \n2. Manual\nIntroduzca el número de la opción deseada: ");
+    scanf("%s", modo);
 
 
     /*--------------------ABRIR EL SEMAFORO CON EL NOMBRE----------------------*/
@@ -99,65 +99,143 @@ int main() {
     ptr_entero[15] = 16; // inicializar el contador de posicion en memoria en cero
     printf("contadooor: %d\n",ptr_entero[15]);
 
+    /* --------------------------- Bucle de ejecucion ----------------------------*/
     while (1)
     {
-        tBlock = clock();
-        sem_wait(&semaforo);                                                    // pedir semaforo
-        tBlock_end = clock();
-        ptr_entero[2] = ptr_entero[2] + ((double) (tBlock_end-tBlock)) / CLOCKS_PER_SEC;
+        if (modo[0] == '1')
+        {
+            tBlock = clock();
+            sem_wait(&semaforo);                                                    // pedir semaforo
+            tBlock_end = clock();
+            ptr_entero[2] = ptr_entero[2] + ((double) (tBlock_end-tBlock)) / CLOCKS_PER_SEC;
 
-        if (ptr_entero[0] < bytesLeidos){                                       // verificar si ya se termino de leer el archivo
-            contador = ptr_entero[15];
-            if (contador <= MEM_SIZE)                                            // si se cumple, se escribe (memoria compartida para caracteres empieza en posicion 1 ==> contador = 1)
-            {
-                tk = clock();
-                caracter = buffer[ptr_entero[0]];                               // Acceder al carácter en el índice especificado
-                ptr_entero[contador] = caracter;                                // escribir en al direccion de memoria compartida
-                tk_end = clock();
-                ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
+            if (ptr_entero[0] < bytesLeidos){                                       // verificar si ya se termino de leer el archivo
+                contador = ptr_entero[15];
+                if (contador <= MEM_SIZE)                                            // si se cumple, se escribe (memoria compartida para caracteres empieza en posicion 1 ==> contador = 1)
+                {
+                    tk = clock();
+                    caracter = buffer[ptr_entero[0]];                               // Acceder al carácter en el índice especificado
+                    ptr_entero[contador] = caracter;                                // escribir en al direccion de memoria compartida
+                    tk_end = clock();
+                    ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
 
-                // obtener tamano del caracter
-                tk = clock();
-                ptr_entero[5] = ptr_entero[5] + sizeof(caracter);
-                tk_end = clock();
-                ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
+                    // obtener tamano del caracter
+                    tk = clock();
+                    ptr_entero[5] = ptr_entero[5] + sizeof(caracter);
+                    tk_end = clock();
+                    ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
 
-                printf("El caracter introducido es: %c\n",caracter);            // imprimir lo necesario
+                    printf("El caracter introducido es: %c\n",caracter);            // imprimir lo necesario
 
-                
-                
-                time_t now = time(NULL);                                        // Obtener el tiempo actual
-                struct tm *local = localtime(&now);                             // Convertir time_t a estructura tm como hora local
-                printf("Hora de insersión en memoria: %02d:%02d:%02d\n", local->tm_hour,  local->tm_min, local->tm_sec);  //horas:minutos:segundos
-                
-                int memPos = (int *)memoria+contador;
-                printf("Posición en memoria donde se introdujo el caracter: 0x%X\n\n", memPos);
+                    
+                    
+                    time_t now = time(NULL);                                        // Obtener el tiempo actual
+                    struct tm *local = localtime(&now);                             // Convertir time_t a estructura tm como hora local
+                    printf("Hora de insersión en memoria: %02d:%02d:%02d\n", local->tm_hour,  local->tm_min, local->tm_sec);  //horas:minutos:segundos
+                    
+                    int memPos = (int *)memoria+contador;
+                    printf("Posición en memoria donde se introdujo el caracter: 0x%X\n\n", memPos);
 
-                tk = clock();
-                ptr_entero[0] = ptr_entero[0] + 1;  // aumentar la posicion en la que se debe leer del buffer
-                tk_end = clock();
-                ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
+                    tk = clock();
+                    ptr_entero[0] = ptr_entero[0] + 1;  // aumentar la posicion en la que se debe leer del buffer
+                    tk_end = clock();
+                    ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
 
-                ptr_entero[15] = ptr_entero[15] + 1;                        // aumentar el contador
-                printf("El contador es: %d\n", ptr_entero[0]);
-                printf("El contador de for es: %d\n", ptr_entero[15]);
-                sleep(2);
+                    ptr_entero[15] = ptr_entero[15] + 1;                        // aumentar el contador
+                    printf("El contador es: %d\n", ptr_entero[0]);
+                    printf("El contador de for es: %d\n", ptr_entero[15]);
+                    //sleep(2);
+                    
+                }
+                else{                                   // volver al inicio de la memoria compartida para los caracteres
+                    sleep(1);
+                    ptr_entero[15] = 16;
+                }
+
                 
             }
-            else{                                   // volver al inicio de la memoria compartida para los caracteres
-                //sleep(1);
-                ptr_entero[15] = 16;
+            else{
+                ptr_entero[1] = 1;
+                printf("Se acabo el documento \n");
+                sem_post(&semaforo);                // liberar el semaforo
+                break;
             }
+            sem_post(&semaforo);                // liberar el semaforo
+        }
+        else if (modo[0] == '2')
+        {
+            // esperar un enter
+            printf("Presione 'Enter' para tomar otro caracter!\n");
+            getchar();
 
-            
+            tBlock = clock();
+            sem_wait(&semaforo);                                                    // pedir semaforo
+            tBlock_end = clock();
+            ptr_entero[2] = ptr_entero[2] + ((double) (tBlock_end-tBlock)) / CLOCKS_PER_SEC;
+
+            if (ptr_entero[0] < bytesLeidos){                                       // verificar si ya se termino de leer el archivo
+                contador = ptr_entero[15];
+                if (contador <= MEM_SIZE)                                            // si se cumple, se escribe (memoria compartida para caracteres empieza en posicion 1 ==> contador = 1)
+                {
+                    tk = clock();
+                    caracter = buffer[ptr_entero[0]];                               // Acceder al carácter en el índice especificado
+                    ptr_entero[contador] = caracter;                                // escribir en al direccion de memoria compartida
+                    tk_end = clock();
+                    ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
+
+                    // obtener tamano del caracter
+                    tk = clock();
+                    ptr_entero[5] = ptr_entero[5] + sizeof(caracter);
+                    tk_end = clock();
+                    ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
+
+                    printf("El caracter introducido es: %c\n",caracter);            // imprimir lo necesario
+
+                    
+                    
+                    time_t now = time(NULL);                                        // Obtener el tiempo actual
+                    struct tm *local = localtime(&now);                             // Convertir time_t a estructura tm como hora local
+                    printf("Hora de insersión en memoria: %02d:%02d:%02d\n", local->tm_hour,  local->tm_min, local->tm_sec);  //horas:minutos:segundos
+                    
+                    int memPos = (int *)memoria+contador;
+                    printf("Posición en memoria donde se introdujo el caracter: 0x%X\n\n", memPos);
+
+                    tk = clock();
+                    ptr_entero[0] = ptr_entero[0] + 1;  // aumentar la posicion en la que se debe leer del buffer
+                    tk_end = clock();
+                    ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
+
+                    ptr_entero[15] = ptr_entero[15] + 1;                        // aumentar el contador
+                    printf("El contador es: %d\n", ptr_entero[0]);
+                    printf("El contador de for es: %d\n", ptr_entero[15]);
+                    //sleep(2);
+                    
+                }
+                else{                                   // volver al inicio de la memoria compartida para los caracteres
+                    sleep(1);
+                    ptr_entero[15] = 16;
+                }
+
+                
+            }
+            else{
+                ptr_entero[1] = 1;
+                printf("Se acabo el documento \n");
+                sem_post(&semaforo);                // liberar el semaforo
+                break;
+            }
+            sem_post(&semaforo);                // liberar el semaforo
         }
         else{
-            ptr_entero[1] = 1;
-            printf("Se acabo el documento \n");
-            sem_post(&semaforo);                // liberar el semaforo
-            break;
+            printf("La opción elegida no es válida. Saliendo...");
+            
+            if (shmdt(memoria) == -1) {
+                perror("Error al desadjuntar la memoria compartida");
+                exit(1);
+            }
+            fclose(archivo);        // Cierra el archivo 
+            return 0;
         }
-        sem_post(&semaforo);                // liberar el semaforo
     }
 
     
