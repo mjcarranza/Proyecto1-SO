@@ -19,15 +19,24 @@ char caracter;          // variable para guardar el caracter leido
 sem_t semaforo;         // instancia de semaforo
 int *ptr_entero;        // puntero para la memoria compartida
 #define MEM_SIZE 22     // Tamaño de la memoria compartida en bytes
+char direccion[50] = "archivos/texto_reconstruido.txt";
+void writeToFile(char caracter){
+    FILE *archivo = fopen(direccion, "a");
+                
+    if (archivo == NULL) {
+        perror("Error al abrir el archivo");
+        return;
+    }
+                
+    // Escribir un carácter adicional al final del archivo
+    fputc(caracter, archivo);
+
+    // Cerrar el archivo
+    fclose(archivo);
+
+}
 
 int main() {
-    
-    /*----------------Nombre del archivo reconstruido----------------*/
-    char direccion[50] = "archivos/";
-    char nombre[50] = "texto_reconstruido"; // Variable para almacenar el nombre del archivo
-    strcat(nombre, ".txt");
-    strcat(direccion, nombre); // la variable direccion tiene la direccion del archivo que se va a escribir
-
     /*--------------------ABRIR EL SEMAFORO CON EL NOMBRE----------------------*/
     // Inicializa el semáforo para uso entre procesos
     if (sem_init(&semaforo, 1, 1) == -1) {
@@ -67,16 +76,18 @@ int main() {
         if (caracteres_memoria > 0){
             int cont_reconstructor = (int) ptr_entero[14];
             if (cont_reconstructor < MEM_SIZE){
-                caracter = (char) ptr_entero[15 + cont_reconstructor];
-                ptr_entero[14 + cont_reconstructor] = 0;
+                caracter = (char) ptr_entero[16 + cont_reconstructor];
+                writeToFile(caracter);
+                ptr_entero[16 + cont_reconstructor] = 0;
                 ptr_entero[13] = caracteres_memoria - 1;
                 ptr_entero[14] = cont_reconstructor + 1;
             }
             else{
-                caracter = (char) ptr_entero[15];
-                ptr_entero[15] = 0;
+                caracter = (char) ptr_entero[16];
+                writeToFile(caracter);
+                ptr_entero[16] = 0;
                 ptr_entero[13] = caracteres_memoria - 1;
-                ptr_entero[14] = 0;    
+                ptr_entero[14] = 1;    
             }
         }else{
             printf("No hay caracteres en memoria");
