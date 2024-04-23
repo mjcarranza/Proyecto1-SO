@@ -116,6 +116,7 @@ int main() {
                     tk = clock();
                     caracter = buffer[ptr_entero[0]];                               // Acceder al carácter en el índice especificado
                     ptr_entero[contador] = caracter;                                // escribir en al direccion de memoria compartida
+                    ptr_entero[13] = ptr_entero[13] + 1;                            // sumar a la cantidad de caracteres en memoria
                     tk_end = clock();
                     ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
 
@@ -180,6 +181,7 @@ int main() {
                     tk = clock();
                     caracter = buffer[ptr_entero[0]];                               // Acceder al carácter en el índice especificado
                     ptr_entero[contador] = caracter;                                // escribir en al direccion de memoria compartida
+                    ptr_entero[13] = ptr_entero[13] + 1;                            // sumar a la cantidad de caracteres en memoria
                     tk_end = clock();
                     ptr_entero[7] = ptr_entero[7] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
 
