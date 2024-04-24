@@ -1,8 +1,3 @@
-/*
-    Proceso encargado de mostrar las estadisticas asociadas a los procesos cliente y reconstructor
-*/
-
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -14,7 +9,7 @@
 #include <semaphore.h>  // Para utilizar semaforos
 #include <fcntl.h>      // para la creacion del semaforo
 
-#define MEM_SIZE 20     // Tamaño de la memoria compartida en bytes
+#define MEM_SIZE 15     // Tamaño de la memoria compartida en bytes
 
 sem_t semaforo;         // instancia de semaforo
 int *ptr_entero;        // puntero para la memoria compartida
@@ -52,7 +47,7 @@ int main() {
     while (1)
     {
         /* revisar que hayan terminado todos los procesos, si terminaron*/
-        if ((ptr_entero[1] == 1) ) // si ya terminaron el cliente y el reconstructor
+        if ((ptr_entero[1] == 1) )  // && ptr_entero[10] == 1 si ya terminaron el cliente y el reconstructor
         {
             sem_wait(&semaforo); // pedir semaforo
             // mostrar las estadisticas segun los valores encontrados en memoria

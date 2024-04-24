@@ -47,4 +47,4 @@ est: $(TARGET3)
 
 # Regla para limpiar archivos basura
 clean:
-	rm -f $(TARGET1) $(TARGET2) $(TARGET3) creador cliente estadisticas
+	rm -f $(TARGET1) $(TARGET2) $(TARGET3) $(TARGET4) creador cliente estadisticas reconstructor

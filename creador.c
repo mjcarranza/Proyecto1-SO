@@ -52,6 +52,9 @@ int main() {
   for (int i = 0; i < tamanio_memoria+1; i++) {
     ptr_entero[i] = 0;
   }
+  ptr_entero[12] = num_caracteres+15;
+  ptr_entero[13] = 0;
+  ptr_entero[15] = 16;
   printf("Imprimiendo memoria....\n");
   /*---------------------------Visualizar la memoria compartida en tiempo real---------------------------*/
   while (1) {      
@@ -63,7 +66,7 @@ int main() {
     printf("\n");
 
     // si se termino la escritura, terminar el programa
-    if (ptr_entero[1] == 1)
+    if (ptr_entero[1] == 1 )    // && ptr_entero[10] == 1 si terminaron los clientes y terminaron los reconstructores
     {
       printf("\nTransferencia terminada.\n");
       break;
