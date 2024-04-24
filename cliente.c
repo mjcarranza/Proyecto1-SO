@@ -99,7 +99,7 @@ int main() {
 
     printf("\n\n");
     printf("El texto completo es: \n");
-    for (int i = 0; i < bytesLeidos; i++)
+    for (size_t i = 0; i < bytesLeidos; i++)
     {
         printf("%c", buffer[i]);
     }
@@ -154,7 +154,7 @@ int main() {
                     time_t now = time(NULL);                                        // Obtener el tiempo actual
                     struct tm *local = localtime(&now);                             // Convertir time_t a estructura tm como hora local
                     printf("Hora de insersión en memoria: %02d:%02d:%02d\n", local->tm_hour,  local->tm_min, local->tm_sec);  //horas:minutos:segundos
-                    int memPos = (int *)memoria+contador;
+                    int memPos = *(int *)memoria+contador;
                     printf("Posición en memoria donde se introdujo el caracter: 0x%X\n\n", memPos); // imprimir posicion en memoria donde se inserta el caracter                
                     printf("El contador es: %f\n", ptr_entero[0]);
                     printf("El contador de for es: %f\n", ptr_entero[15]);
