@@ -48,7 +48,7 @@ int main() {
   }
 
   // Inicializar la memoria compartida (todos los campos en 0)
-  int *ptr_entero = (int *)ptr_memoria;
+  double *ptr_entero = (double *)ptr_memoria;
   for (int i = 0; i < tamanio_memoria+1; i++) {
     ptr_entero[i] = 0;
   }

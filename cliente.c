@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <math.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>     // Incluir para la función sleep
@@ -18,7 +19,7 @@ char caracter;          // variable para guardar el caracter leido
 sem_t semaforo;         // instancia de semaforo
 size_t bytesLeidos;     // longitud del buffer
 int contador;           // contador para conrolar los espacios de memoria donde se escribe
-int *ptr_entero;        // puntero para la memoria compartida
+double *ptr_entero;        // puntero para la memoria compartida
 double tUser = 0.0, tKernel = 0.0, tBlocked = 0.0;
 
 int main() {
@@ -90,7 +91,7 @@ int main() {
     /* --------------------------- leer contenido del archivo ----------------------------*/
     // Leer el contenido del archivo en el buffer
     bytesLeidos = fread(buffer, sizeof(char), MAX_SIZE, archivo);
-    ptr_entero = (int *)memoria;    // ver si debo poner el asterisco antes de ptr
+    ptr_entero = (double *)memoria;    // ver si debo poner el asterisco antes de ptr
     if (bytesLeidos == 0) {
         perror("Error al leer el archivo");
         return 1;
@@ -134,7 +135,7 @@ int main() {
                 if (contador <= ptr_entero[12])                                     // si se cumple, se escribe (memoria compartida para caracteres empieza en posicion 1 ==> contador = 1)
                 {
                     tk = clock();
-                    caracter = buffer[ptr_entero[0]];                               // Acceder al carácter en el índice especificado
+                    caracter = buffer[(int)ptr_entero[0]];                               // Acceder al carácter en el índice especificado
                     ptr_entero[contador] = caracter;                                // escribir en al direccion de memoria compartida
                     ptr_entero[13] = ptr_entero[13] + 1;                            // sumar a la cantidad de caracteres en memoria
                     ptr_entero[5] = ptr_entero[5] + sizeof(caracter);
@@ -151,8 +152,8 @@ int main() {
                     printf("Hora de insersión en memoria: %02d:%02d:%02d\n", local->tm_hour,  local->tm_min, local->tm_sec);  //horas:minutos:segundos
                     int memPos = (int *)memoria+contador;
                     printf("Posición en memoria donde se introdujo el caracter: 0x%X\n\n", memPos); // imprimir posicion en memoria donde se inserta el caracter                
-                    printf("El contador es: %d\n", ptr_entero[0]);
-                    printf("El contador de for es: %d\n", ptr_entero[15]);
+                    printf("El contador es: %f\n", ptr_entero[0]);
+                    printf("El contador de for es: %f\n", ptr_entero[15]);
                     tu_end = clock();
                     tUser = tu_end - tu;
                     //sleep(2);
