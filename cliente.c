@@ -108,16 +108,20 @@ int main() {
     /* --------------------------- Bucle de ejecucion ----------------------------*/
     while (1)
     {   
-        tu = clock();
-        if (modo[0] == '2'){
-            // esperar un enter
-            printf("Presione 'Enter' para tomar otro caracter!\n");
-            getchar();
-        }
-        tu_end = clock();
-        tUser += tu_end - tu;
-
         tBlock = clock();
+        if (modo[0] == '2'){
+            printf("Presiona Enter para continuar o Q para salir del programa...\n");
+            int tecla = getchar(); // Leer el carácter introducido por el usuario
+            if (tecla == '\n') {
+                printf("Tomando un caracter nuevo!.\n");
+            } else if (tecla == 'Q' || tecla == 'q') {
+                ptr_entero[1] = 1;
+                printf("El cliente se detendrá.\n");
+                break;
+            }
+        }else if(modo[0] == '1'){
+            sleep(1);
+        }
         sem_wait(&semaforo);                                                    // pedir semaforo
         tBlock_end = clock();
         tBlocked += tBlock_end-tBlock;
@@ -130,7 +134,7 @@ int main() {
             tKernel += tk_end-tk; 
 
             // ptr[12] - 15 = numero de caracteres que se comparten
-            if (ptr_entero[13] <= (ptr_entero[12]-15))
+            if (ptr_entero[13] < (ptr_entero[12]-15))
             {
                 if (contador <= ptr_entero[12])                                     // si se cumple, se escribe (memoria compartida para caracteres empieza en posicion 1 ==> contador = 1)
                 {
@@ -156,26 +160,23 @@ int main() {
                     printf("El contador de for es: %f\n", ptr_entero[15]);
                     tu_end = clock();
                     tUser = tu_end - tu;
-                    //sleep(2);
+                    ptr_entero[7] += ((double) (tKernel)) / CLOCKS_PER_SEC; // Segundos;
+                    ptr_entero[6] += ((double) (tUser)) / CLOCKS_PER_SEC; // Segundos;
+                    ptr_entero[2] += ((double) (tBlocked)) / CLOCKS_PER_SEC;
                     
                 }
-            }
-            
-
-            
-            else{                                                               // volver al inicio de la memoria compartida para los caracteres
-                sleep(1);
+                
+                else{                                                               // volver al inicio de la memoria compartida para los caracteres
                 tk = clock();
                 ptr_entero[15] = 16;
                 tk_end = clock();
                 tKernel += tk_end-tk; 
+                ptr_entero[7] += ((double) (tKernel)) / CLOCKS_PER_SEC; // Segundos;
             }            
+            }
         }
 
         else{
-            ptr_entero[7] = ((double) (tKernel)) / CLOCKS_PER_SEC; // Segundos;
-            ptr_entero[6] = ((double) (tUser)) / CLOCKS_PER_SEC; // Segundos;
-            ptr_entero[2] = ((double) (tBlocked)) / CLOCKS_PER_SEC;
             ptr_entero[1] = 1;
             printf("Se acabo el documento \n");
             sem_post(&semaforo);                                                // liberar el semaforo
