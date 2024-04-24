@@ -64,10 +64,7 @@ int main() {
       printf("%c", caracter);
     }
     printf("\n");
-    int car_mem = (int) ptr_entero[13];
-    printf("Caracteres en memoria %i\n", car_mem);
-
-
+    
     // si se termino la escritura, terminar el programa
     if (ptr_entero[1] == 1 && ptr_entero[10] == 1) //si terminaron los clientes y terminaron los reconstructores
     {
