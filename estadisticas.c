@@ -47,7 +47,7 @@ int main() {
     while (1)
     {
         /* revisar que hayan terminado todos los procesos, si terminaron*/
-        if ((ptr_entero[1] == 1) )  // && ptr_entero[10] == 1 si ya terminaron el cliente y el reconstructor
+        if ((ptr_entero[1] == 1 && ptr_entero[10] == 1) )  // && ptr_entero[10] == 1 si ya terminaron el cliente y el reconstructor
         {
             sem_wait(&semaforo); // pedir semaforo
             // mostrar las estadisticas segun los valores encontrados en memoria
@@ -55,7 +55,7 @@ int main() {
             printf("Tiempo bloqueado del Cliente: %0.10f segundos.\n", ptr_entero[2]);              //
             printf("Tiempo bloquedado del Reconstructor: %0.10f segundos.\n", ptr_entero[3]);       // server
             printf("Número de caracteres transferidos: %f caracteres.\n", ptr_entero[0]);           //
-            printf("Número de caracteres en el buffer: %f caracteres.\n", ptr_entero[4]);           // server
+            printf("Número de caracteres en el buffer: %f caracteres.\n", ptr_entero[13]);           // server
             printf("Espacio total de memoria utilizado: %f bytes.\n", ptr_entero[5]);               //
             printf("Tiempo del Cliente en modo Usuario: %0.10f segundos.\n", ptr_entero[6]);
             printf("Tiempo del Cliente en modo Kernel: %0.10f segundos.\n", ptr_entero[7]);         //
