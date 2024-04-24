@@ -17,7 +17,6 @@
 
 char caracter;          // variable para guardar el caracter leido
 sem_t semaforo;         // instancia de semaforo
-int *ptr_entero;        // puntero para la memoria compartida
 #define MEM_SIZE 22     // Tamaño de la memoria compartida en bytes
 char direccion[50] = "archivos/texto_reconstruido.txt";
 
@@ -69,100 +68,87 @@ int main() {
     }
     
     /* --------------------------- Leer contenido de memoria ----------------------------*/
-    ptr_entero = (int *)memoria;    // ver si debo poner el asterisco antes de ptr
+    double *ptr_entero = (double *)memoria;
 
 
     while (1)
     {   
+        tBlock = clock();
         if (modo[0] == '2'){
-            tBlock = clock();
-            printf("Presiona Enter para continuar...\n");
+            printf("Presiona Enter para continuar o Q para salir del programa...\n");
             int tecla = getchar(); // Leer el carácter introducido por el usuario
             if (tecla == '\n') {
-                sem_wait(&semaforo);  
-                tBlock_end = clock();
-                ptr_entero[3] = ptr_entero[3] + ((double) (tBlock_end-tBlock)) / CLOCKS_PER_SEC;
-                                                                // pedir semaforo
-                int caracteres_memoria = (int) ptr_entero[13];               // Acceder al carácter en el índice especificado
-
-                if (caracteres_memoria > 0){
-                    int cont_reconstructor = (int) ptr_entero[14];
-                    if (cont_reconstructor < MEM_SIZE){
-                        tk = clock();
-                        caracter = (char) ptr_entero[16 + cont_reconstructor];
-                        writeToFile(caracter);
-                        ptr_entero[16 + cont_reconstructor] = 0;
-                        ptr_entero[13] = caracteres_memoria - 1;
-                        ptr_entero[14] = cont_reconstructor + 1;
-                        tk_end = clock();
-                        ptr_entero[9] = ptr_entero[9] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
-                        sem_post(&semaforo);
-                    }
-                    else{
-                        tk = clock();
-                        caracter = (char) ptr_entero[16];
-                        writeToFile(caracter);
-                        ptr_entero[16] = 0;
-                        ptr_entero[13] = caracteres_memoria - 1;
-                        ptr_entero[14] = 1;    
-                        tk_end = clock();
-                        ptr_entero[9] = ptr_entero[9] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
-                        sem_post(&semaforo);
-                    }
-                }else{
-                    sem_post(&semaforo);
-                    printf("No hay caracteres en memoria");
-                }
+                printf("Tomando un caracter nuevo!.\n");
             } else if (tecla == 'Q' || tecla == 'q') {
-                printf("El programa terminará.\n");
+                ptr_entero[10] = 1;
+                printf("El reconstructor se detendrá.\n");
+                break;
             }
-            
         }else if(modo[0] == '1'){
-            tBlock = clock();
-            sem_wait(&semaforo);  
-            tBlock_end = clock();
-            ptr_entero[3] = ptr_entero[3] + ((double) (tBlock_end-tBlock)) / CLOCKS_PER_SEC;
-                                                                // pedir semaforo
-            int caracteres_memoria = (int) ptr_entero[13];               // Acceder al carácter en el índice especificado
-
-            if (caracteres_memoria > 0){
-                int cont_reconstructor = (int) ptr_entero[14];
-                if (cont_reconstructor < MEM_SIZE){
-                    tk = clock();
-                    caracter = (char) ptr_entero[16 + cont_reconstructor];
-                    writeToFile(caracter);
-                    ptr_entero[16 + cont_reconstructor] = 0;
-                    ptr_entero[13] = caracteres_memoria - 1;
-                    ptr_entero[14] = cont_reconstructor + 1;
-                    tk_end = clock();
-                    ptr_entero[9] = ptr_entero[9] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
-                    sem_post(&semaforo);
-                    sleep(4);
-                }
-                else{
-                    tk = clock();
-                    caracter = (char) ptr_entero[16];
-                    writeToFile(caracter);
-                    ptr_entero[16] = 0;
-                    ptr_entero[13] = caracteres_memoria - 1;
-                    ptr_entero[14] = 1;    
-                    tk_end = clock();
-                    ptr_entero[9] = ptr_entero[9] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
-                    sem_post(&semaforo);
-                    sleep(4);
-                }
-            }else{
-                sem_post(&semaforo);
-                printf("No hay caracteres en memoria");
-                sleep(4);
-            }        
+            sleep(1);
         }
+
+        sem_wait(&semaforo);                                          // pedir semaforo
+        tBlock_end = clock();
+        ptr_entero[3] = ptr_entero[3] + ((double) (tBlock_end-tBlock)) / CLOCKS_PER_SEC;
+                                                                    
+        int caracteres_memoria = (int) ptr_entero[13];               // Acceder al carácter en el índice especificado
+        if (caracteres_memoria > 0){
+            int cont_reconstructor = (int) ptr_entero[14];
+            if (cont_reconstructor < ptr_entero[12]-15){
+                tk = clock();
+                caracter = (char) ptr_entero[16 + cont_reconstructor];
+                writeToFile(caracter);
+                ptr_entero[16 + cont_reconstructor] = 0;
+                ptr_entero[13] = caracteres_memoria - 1;
+                ptr_entero[14] = cont_reconstructor + 1;
+                tk_end = clock();
+                ptr_entero[9] = ptr_entero[9] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
+                
+                tu = clock();
+                //imprimir hora, campo, caracter y pos de memoria
+                printf("El caracter introducido es: %c\n",caracter);            // imprimir caracter introducido
+                time_t now = time(NULL);                                        // Obtener el tiempo actual
+                struct tm *local = localtime(&now);                             // Convertir time_t a estructura tm como hora local
+                printf("Hora de insersión en el texto reconstruido: %02d:%02d:%02d\n", local->tm_hour,  local->tm_min, local->tm_sec);  //horas:minutos:segundos
+                int memPos = (int *)memoria+cont_reconstructor;
+                printf("Posición en memoria de donde se obtuvo el caracter: 0x%X\n\n", memPos); // imprimir posicion en memoria donde se inserta el caracter                
+                tu_end = clock();
+                ptr_entero[8] = ptr_entero[8] + ((double) (tu_end-tu)) / CLOCKS_PER_SEC; // Segundos;
+                sem_post(&semaforo);
+            }
+            else{
+                tk = clock();
+                caracter = (char) ptr_entero[16];
+                writeToFile(caracter);
+                ptr_entero[16] = 0;
+                ptr_entero[13] = caracteres_memoria - 1;
+                ptr_entero[14] = 1;    
+                tk_end = clock();
+                ptr_entero[9] = ptr_entero[9] + ((double) (tk_end-tk)) / CLOCKS_PER_SEC; // Segundos;
+                
+                tu = clock();
+                //imprimir hora, campo, caracter y pos de memoria
+                printf("El caracter introducido es: %c\n",caracter);            // imprimir caracter introducido
+                time_t now = time(NULL);                                        // Obtener el tiempo actual
+                struct tm *local = localtime(&now);                             // Convertir time_t a estructura tm como hora local
+                printf("Hora de insersión en el texto reconstruido: %02d:%02d:%02d\n", local->tm_hour,  local->tm_min, local->tm_sec);  //horas:minutos:segundos
+                int memPos = (int *)memoria+cont_reconstructor;
+                printf("Posición en memoria de donde se obtuvo el caracter: 0x%X\n\n", memPos); // imprimir posicion en memoria donde se inserta el caracter                
+                tu_end = clock();
+                ptr_entero[8] = ptr_entero[8] + ((double) (tu_end-tu)) / CLOCKS_PER_SEC; // Segundos;
+                sem_post(&semaforo);
+            }
+        }else{
+            sem_post(&semaforo);
+            printf("No hay caracteres en memoria. \n\n");
+        }                
         
-        sleep(1);
-        if (ptr_entero[1] == 1)
-        {
-        printf("\nTransferencia terminada.\n");
-        break;
+        if (ptr_entero[1] == 1 && ptr_entero[13] == 0) 
+        {   
+            ptr_entero[10] = 1;
+            printf("\nTransferencia terminada.\n");
+            break;
         } 
     }
 
