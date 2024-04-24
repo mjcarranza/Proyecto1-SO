@@ -112,7 +112,7 @@ int main() {
                 time_t now = time(NULL);                                        // Obtener el tiempo actual
                 struct tm *local = localtime(&now);                             // Convertir time_t a estructura tm como hora local
                 printf("Hora de insersión en el texto reconstruido: %02d:%02d:%02d\n", local->tm_hour,  local->tm_min, local->tm_sec);  //horas:minutos:segundos
-                int memPos = (int *)memoria+cont_reconstructor;
+                int memPos = *(int *)memoria+cont_reconstructor;
                 printf("Posición en memoria de donde se obtuvo el caracter: 0x%X\n\n", memPos); // imprimir posicion en memoria donde se inserta el caracter                
                 tu_end = clock();
                 ptr_entero[8] = ptr_entero[8] + ((double) (tu_end-tu)) / CLOCKS_PER_SEC; // Segundos;
@@ -135,7 +135,7 @@ int main() {
                 time_t now = time(NULL);                                        // Obtener el tiempo actual
                 struct tm *local = localtime(&now);                             // Convertir time_t a estructura tm como hora local
                 printf("Hora de insersión en el texto reconstruido: %02d:%02d:%02d\n", local->tm_hour,  local->tm_min, local->tm_sec);  //horas:minutos:segundos
-                int memPos = (int *)memoria+cont_reconstructor;
+                int memPos = *(int *)memoria+cont_reconstructor;
                 printf("Posición en memoria de donde se obtuvo el caracter: 0x%X\n\n", memPos); // imprimir posicion en memoria donde se inserta el caracter                
                 tu_end = clock();
                 ptr_entero[8] = ptr_entero[8] + ((double) (tu_end-tu)) / CLOCKS_PER_SEC; // Segundos;
