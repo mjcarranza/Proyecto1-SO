@@ -97,6 +97,7 @@ int main() {
             int cont_reconstructor = (int) ptr_entero[14];
             if (cont_reconstructor < ptr_entero[12]-15){
                 tk = clock();
+                //Toma el caracter de memoria y lo guarda en el texto reconstruido
                 caracter = (char) ptr_entero[16 + cont_reconstructor];
                 writeToFile(caracter);
                 ptr_entero[16 + cont_reconstructor] = 0;
@@ -118,6 +119,7 @@ int main() {
                 sem_post(&semaforo);
             }
             else{
+                //Toma el caracter de memoria y lo guarda en el texto reconstruido
                 tk = clock();
                 caracter = (char) ptr_entero[16];
                 writeToFile(caracter);
