@@ -1,4 +1,5 @@
 # Proyecto1-SO
 
-###Nota: 
+## Nota: 
+
 Proyecto completo en rama main
